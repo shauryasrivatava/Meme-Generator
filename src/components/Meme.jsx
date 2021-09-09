@@ -1,7 +1,12 @@
 import { copyImageToClipboard } from 'copy-image-clipboard';
 import { saveAs } from 'file-saver';
 import { useState } from "react";
+
+
+
 const Meme = ({ meme, setMeme }) => {
+  const[hidebtn,setHidebtn]=useState(false)
+
   const[form,setForm]= useState({
     template_id:meme.id,
     username:"forLOL",
@@ -16,10 +21,12 @@ const Meme = ({ meme, setMeme }) => {
       fetch(url)
       .then(response=>response.json())
       
-      .then(data=> (
-        data.success===true?
-        setMeme({...meme,url: data.data.url}):" "
-        )); 
+      .then((data)=> {
+        if(data.success===true){
+          setMeme({...meme,url: data.data.url})
+          setHidebtn(true)
+        }
+      }); 
     };
     const handleDownload =()=>{
       saveAs(meme.url,meme.name);
@@ -61,10 +68,11 @@ const Meme = ({ meme, setMeme }) => {
           }}
         >Return to Choose Template</button>
       </div>
+      { hidebtn &&
       <div>
       <button onClick={handleDownload}>DOWNLOAD</button>
       <button onClick={handleImageToClipboard}>Copy Image To Clipboard</button>
-      </div>
+      </div>}
     </div>
   );
 };
